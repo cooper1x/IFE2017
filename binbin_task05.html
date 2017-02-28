@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style type="text/css">
+        ul{
+            list-style: none;
+            /* display: block; */
+            display: flex;
+            height: 100px;
+            align-items: flex-end;
+        }
+        li{
+            /* float: left; */
+            display: inline-block;
+            background-color: skyblue;
+            margin-right: 5px;
+            width: 30px;
+            text-align: center;
+            font-size: 12px;
+        }
+        input{
+            display: block;
+            margin: 38px;
+        }
+        #btn{
+            margin-left: 23px;
+        }
+    </style>
+</head>
+<body>
+    <ul id="list">
+        <!-- <li>111</li>
+        <li>222</li>
+        <li>333</li>
+        <li>444</li> -->
+    </ul>
+    <div id="box">
+        <input type="number" id="input" min="10" max="100">
+        <div id="btn">
+            <button id="left_in">左侧入</button>
+            <button id="right_in">右侧入</button>
+            <button id="left_out">左侧出</button>
+            <button id="right_out">右侧出</button>
+            <button id="ase">升序</button>
+            <button id="desc">降序</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+         var ul = document.getElementById("list");
+         var input = document.getElementById("input");
+         var left_in = document.getElementById("left_in");
+         var right_in = document.getElementById("right_in");
+         var left_out = document.getElementById("left_out");
+         var right_out = document.getElementById("right_out");
+         var ase = document.getElementById("ase");
+         var desc = document.getElementById("desc");
+         left_in.onclick = function(){
+            var lis = document.getElementsByTagName('li');
+            judeg(lis);
+            var reg = /^([1-9]\d|100)$/;
+            if(!reg.test(input.value)){
+                alert("请输入10-100的整数");
+                input.value = "";
+                return;
+            }
+            var li = document.createElement("li");
+            li.innerHTML = input.value;
+            li.style.height = parseInt(input.value) + 10 + "px";
+            ul.insertBefore(li,lis[0]);
+            input.value = "";
+            remove(lis);
+         }
+         right_in.onclick = function(){
+            var lis = document.getElementsByTagName('li');
+            judeg(lis);
+            var reg = /^([1-9]\d|100)$/;
+            if(!reg.test(input.value)){
+                alert("请输入10-100的整数");
+                input.value = "";
+                return;
+            }
+            var li = document.createElement("li");
+            li.innerHTML = input.value;
+            li.style.height = parseInt(input.value) + 10 + "px";
+            ul.appendChild(li);
+            input.value = "";
+            remove(lis);
+         }
+         left_out.onclick = function(){
+            var lis = ul.getElementsByTagName('li');
+            var temp = lis[0].innerHTML;
+            ul.removeChild(lis[0]);
+            setTimeout(function(){
+                alert(temp)
+            },100);
+         }
+         right_out.onclick = function(){
+            var lis = ul.getElementsByTagName('li');
+            var temp = lis[lis.length-1].innerHTML;
+            ul.removeChild(lis[lis.length-1]);
+            setTimeout(function(){
+                alert(temp)
+            },100);
+         }
+         ase.onclick = function(){
+            var lis = ul.getElementsByTagName('li');
+            var arr = [];
+            for(var x = 0; x < lis.length; x++){
+                arr.push(lis[x]);
+            }
+            // lis.sort(function(a,b){
+            //     return a.innerHTML - b.innerHTML;
+            // })
+            ul.innerHTML = "";
+            for(var i = 0; i < arr.length -1 ; i++){
+                for(var j = 0; j < arr.length - i - 1; j++){
+                    if(arr[j].innerHTML > arr[j+1].innerHTML){
+                        var temp = arr[j+1];
+                        arr[j+1] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+            for(var k = 0; k < arr.length; k++){
+                ul.appendChild(arr[k]);
+            }
+         }
+         desc.onclick = function(){
+            var lis = ul.getElementsByTagName('li');
+            var arr = [];
+            for(var x = 0; x < lis.length; x++){
+                arr.push(lis[x]);
+            }
+            ul.innerHTML = "";
+            for(var i = 0; i < arr.length -1 ; i++){
+                for(var j = 0; j < arr.length - i - 1; j++){
+                    if(arr[j].innerHTML < arr[j+1].innerHTML){
+                        var temp = arr[j+1];
+                        arr[j+1] = arr[j];
+                        arr[j] = temp;
+                    }
+                }
+            }
+            for(var k = 0; k < arr.length; k++){
+                ul.appendChild(arr[k]);
+            }
+         }
+         // 功能函数
+         function remove(lis){
+            for(var i = 0; i < lis.length; i++){
+               lis[i].onclick = function(){
+                   ul.removeChild(this);
+               }
+            }
+         }
+         function judeg(lis){
+            if(lis.length - 1 > 60){
+                alert("超出最大范围");
+                input.value = "";
+                return;
+            }
+         }
+         // function reg(){
+         //    var reg = /^([1-9]\d|100)$/;
+         //    if(!reg.test(input.value)){
+         //        alert("请输入10-100的整数");
+         //        input.value = "";
+         //        return;
+         //    }
+         // }
+    </script>
+</body>
+</html>
