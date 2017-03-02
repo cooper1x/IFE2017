@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style type="text/css">
+        ul{
+            list-style: none;
+            display: block;
+            overflow: hidden;
+        }
+        li{
+            float: left;
+            /* background-color: skyblue; */
+            border: 1px solid #000;
+            margin-right: 10px;
+        }
+        textarea{
+            display: block;
+            margin: 38px;
+        }
+        #btn{
+            margin-left: 23px;
+        }
+        span{
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <ul id="list">
+        <!-- <li>111</li>
+        <li>222</li>
+        <li>333</li>
+        <li>444</li> -->
+    </ul>
+    <div id="box">
+        <textarea name="" col=10 row=3 id="textarea"></textarea>
+        <div id="btn">
+            <button id="left_in">左侧入</button>
+            <button id="right_in">右侧入</button>
+            <button id="left_out">左侧出</button>
+            <button id="right_out">右侧出</button>
+            <input text="number" id="input"></input>
+            <button id="find">查询</button>
+            <button id="del">清空</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var ul = document.getElementById("list");
+        var lis = ul.getElementsByTagName('li');
+        var textarea = document.getElementById("textarea");
+        var left_in = document.getElementById("left_in");
+        var right_in = document.getElementById("right_in");
+        var left_out = document.getElementById("left_out");
+        var right_out = document.getElementById("right_out");
+        var input = document.getElementById("input");
+        var find = document.getElementById("find");
+        var del = document.getElementById("del");
+        var spans = document.getElementsByTagName('span');
+        var arr = split(textarea.value);
+        left_in.onclick = function(){
+           var arr = split(textarea.value);
+           for(var i = 0; i < arr.length; i++){
+                var li = document.createElement("li");
+                var lis = document.getElementsByTagName('li');
+                li.innerHTML = arr[i];
+                ul.insertBefore(li,lis[i]);
+           }
+           textarea.value = "";
+           remove()
+        }
+        right_in.onclick = function(){
+           var arr = split(textarea.value);
+           for(var i = 0; i < arr.length; i++){
+                var li = document.createElement("li");
+                var lis = document.getElementsByTagName('li');
+                li.innerHTML = arr[i];
+                ul.appendChild(li);
+           }
+           textarea.value = "";
+           remove();
+        }
+        left_out.onclick = function(){
+           var lis = ul.getElementsByTagName('li');
+           var temp = lis[0].innerHTML;
+           ul.removeChild(lis[0]);
+           setTimeout(function(){
+               alert(temp)
+           },100);
+        }
+        right_out.onclick = function(){
+           var lis = ul.getElementsByTagName('li');
+           var temp = lis[lis.length-1].innerHTML;
+           ul.removeChild(lis[lis.length-1]);
+           setTimeout(function(){
+               alert(temp)
+           },100);
+        }
+        //设置信号量,负责清空上一次的查询结果,重新渲染所有的li
+        var r = 0;
+        find.onclick = function(){
+            if(r != 0){
+                for(var i = 0; i < lis.length; i++){
+                    lis[i].style.background = "#fff";
+                    lis[i].innerHTML = lis[i].innerHTML.replace(/(<span>)|(<\/span>)/g,"");
+                }
+                r = 0;
+            }
+            if(input.value == "") return;
+            search(lis,input);
+            r++;
+        }
+        del.onclick = function(){
+            var lis = ul.getElementsByTagName('li');
+            for(var i = 0; i < lis.length; i++){
+                lis[i].style.background = "#fff";
+                lis[i].innerHTML = lis[i].innerHTML.replace(/(<span>)|(<\/span>)/g,"");
+            }
+        }
+        //点击删除自己
+        function remove(){
+           var lis = ul.getElementsByTagName('li');
+           for(var i = 0; i < lis.length; i++){
+              lis[i].onclick = function(){
+                  ul.removeChild(this);
+              }
+           }
+        }
+        //切割字符串转数组,数组中每一项是li的值
+        function split(value){
+            var reg = /[，,]|[、]|[\s+]/g
+            var str = value.replace(reg,",")
+            var arr = str.split(",");
+            return arr;
+        }
+        //查询方法
+        function search(lis,input){
+            var count = 0;
+            for(var i = 0; i < lis.length; i++){
+                var index = lis[i].innerHTML.indexOf(input.value);
+                // //备份
+                // lis[i].idx = lis[i].innerHTML;
+                //获取查询输入的小字符串在大字符串中的位置，也就是索引值。
+                if(index != -1){
+                    lis[i].style.background = "yellow";
+                    //替换指定索引的字符串
+                    lis[i].innerHTML = lis[i].innerHTML.replace(new RegExp(input.value, 'g'),"<span>" + input.value + "</span>");
+                    count++;
+                }
+            }
+            console.log(count);
+            if(count == 0) alert("没有找到查询结果");
+            input.value = "";
+        }
+    </script>
+</body>
+</html>

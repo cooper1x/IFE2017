@@ -17,6 +17,7 @@
             width: 30px;
             text-align: center;
             font-size: 12px;
+            transition: all 2s ease 0;
         }
         input{
             display: block;
@@ -51,7 +52,7 @@
          var desc = document.getElementById("desc");
          left_in.onclick = function(){
             var lis = document.getElementsByTagName('li');
-            if(lis.length > 2){
+            if(lis.length > 59){
                 alert("超出最大范围");
                 input.value = "";
                 return;
@@ -71,7 +72,7 @@
          }
          right_in.onclick = function(){
             var lis = document.getElementsByTagName('li');
-            if(lis.length > 2){
+            if(lis.length > 59){
                 alert("超出最大范围");
                 input.value = "";
                 return;
@@ -134,7 +135,6 @@
             for(var i = 0; i < arr.length -1 ; i++){
                 for(var j = 0; j < arr.length - i - 1; j++){
                     if(arr[j].style.height < arr[j+1].style.height){
-                        console.log(arr[j].style.height < arr[j+1].style.height);
                         var temp = arr[j+1];
                         arr[j+1] = arr[j];
                         arr[j] = temp;
