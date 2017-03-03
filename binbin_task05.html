@@ -9,6 +9,7 @@
             display: flex;
             height: 100px;
             align-items: flex-end;
+            position: relative;
         }
         li{
             display: inline-block;
@@ -17,7 +18,7 @@
             width: 30px;
             text-align: center;
             font-size: 12px;
-            transition: all 2s ease 0;
+            transition: left 2s ease 0;
         }
         input{
             display: block;
@@ -42,117 +43,157 @@
         </div>
     </div>
     <script type="text/javascript">
-         var ul = document.getElementById("list");
-         var input = document.getElementById("input");
-         var left_in = document.getElementById("left_in");
-         var right_in = document.getElementById("right_in");
-         var left_out = document.getElementById("left_out");
-         var right_out = document.getElementById("right_out");
-         var ase = document.getElementById("ase");
-         var desc = document.getElementById("desc");
-         left_in.onclick = function(){
-            var lis = document.getElementsByTagName('li');
-            if(lis.length > 59){
-                alert("超出最大范围");
-                input.value = "";
-                return;
-            }
-            var reg = /^([1-9]\d|100)$/;
-            if(!reg.test(input.value)){
-                alert("请输入10-100的整数");
-                input.value = "";
-                return;
-            }
-            var li = document.createElement("li");
-            li.style.height = parseInt(input.value) + "px";
-            console.log(li.style.height);
-            ul.insertBefore(li,lis[0]);
-            input.value = "";
-            remove(lis);
-         }
-         right_in.onclick = function(){
-            var lis = document.getElementsByTagName('li');
-            if(lis.length > 59){
-                alert("超出最大范围");
-                input.value = "";
-                return;
-            }
-            var reg = /^([1-9]\d|100)$/;
-            if(!reg.test(input.value)){
-                alert("请输入10-100的整数");
-                input.value = "";
-                return;
-            }
-            var li = document.createElement("li");
-            li.style.height = parseInt(input.value) + "px";
-            ul.appendChild(li);
-            input.value = "";
-            remove(lis);
-         }
-         left_out.onclick = function(){
-            var lis = ul.getElementsByTagName('li');
-            var temp = lis[0].innerHTML;
-            ul.removeChild(lis[0]);
-            setTimeout(function(){
-                alert(temp)
-            },100);
-         }
-         right_out.onclick = function(){
-            var lis = ul.getElementsByTagName('li');
-            var temp = lis[lis.length-1].innerHTML;
-            ul.removeChild(lis[lis.length-1]);
-            setTimeout(function(){
-                alert(temp)
-            },100);
-         }
-         ase.onclick = function(){
-            var lis = ul.getElementsByTagName('li');
-            var arr = [];
-            for(var x = 0; x < lis.length; x++){
-                arr.push(lis[x]);
-            }
-            ul.innerHTML = "";
+        var ul = document.getElementById("list");
+        var input = document.getElementById("input");
+        var left_in = document.getElementById("left_in");
+        var right_in = document.getElementById("right_in");
+        var left_out = document.getElementById("left_out");
+        var right_out = document.getElementById("right_out");
+        var ase = document.getElementById("ase");
+        var desc = document.getElementById("desc");
+        left_in.onclick = function(){
+           var lis = document.getElementsByTagName('li');
+           if(lis.length > 59){
+               alert("超出最大范围");
+               input.value = "";
+               return;
+           }
+           var reg = /^([1-9]\d|100)$/;
+           if(!reg.test(input.value)){
+               alert("请输入10-100的整数");
+               input.value = "";
+               return;
+           }
+           var li = document.createElement("li");
+           li.style.height = parseInt(input.value) + "px";
+           ul.insertBefore(li,lis[0]);
+           input.value = "";
+           remove(lis);
+        }
+        right_in.onclick = function(){
+           var lis = document.getElementsByTagName('li');
+           if(lis.length > 59){
+               alert("超出最大范围");
+               input.value = "";
+               return;
+           }
+           var reg = /^([1-9]\d|100)$/;
+           if(!reg.test(input.value)){
+               alert("请输入10-100的整数");
+               input.value = "";
+               return;
+           }
+           var li = document.createElement("li");
+           li.style.height = parseInt(input.value) + "px";
+           ul.appendChild(li);
+           input.value = "";
+           remove(lis);
+        }
+        left_out.onclick = function(){
+           var lis = ul.getElementsByTagName('li');
+           var temp = lis[0].innerHTML;
+           ul.removeChild(lis[0]);
+           setTimeout(function(){
+               alert(temp);
+           },100);
+        }
+        right_out.onclick = function(){
+           var lis = ul.getElementsByTagName('li');
+           var temp = lis[lis.length-1].innerHTML;
+           ul.removeChild(lis[lis.length-1]);
+           setTimeout(function(){
+               alert(temp);
+           },100);
+        }
+        ase.onclick = function(){
+           var lis = ul.getElementsByTagName('li');
+           //设置一个arr数组,用来存放每个li的高度
+           var arr = [];
+           for(var i = 0; i < lis.length; i++){
+               arr.push(lis[i].style.height);
+           }
+           //对所有的li的高度值进行冒泡升序排列
+           sort(arr);
+           //定义一个全局变量timer定时器
+           timer = setInterval(render,500);
+        }
+        //state数组,存放每一次比较的结果
+        var state = [];
+        //冒泡计数器,存放比较的总次数
+        var count1 = 0;
+        //冒泡排序(升序),将第i趟的第arr.length - i - 1次的比较结果都存放到state数组中
+        function sort(arr){
             for(var i = 0; i < arr.length -1 ; i++){
                 for(var j = 0; j < arr.length - i - 1; j++){
-                    if(arr[j].style.height > arr[j+1].style.height){
-                        var temp = arr[j+1];
-                        arr[j+1] = arr[j];
-                        arr[j] = temp;
+                    if(arr[j] > arr[j+1]){
+                       var temp = arr[j+1];
+                       arr[j+1] = arr[j];
+                       arr[j] = temp;
+                       count1++;
+                       state.push(arr.slice(0));
                     }
                 }
             }
-            for(var k = 0; k < arr.length; k++){
-                ul.appendChild(arr[k]);
-            }
-         }
-         desc.onclick = function(){
-            var lis = ul.getElementsByTagName('li');
-            var arr = [];
-            for(var x = 0; x < lis.length; x++){
-                arr.push(lis[x]);
-            }
-            ul.innerHTML = "";
+        }
+        //降序
+        function sort2(arr){
             for(var i = 0; i < arr.length -1 ; i++){
                 for(var j = 0; j < arr.length - i - 1; j++){
-                    if(arr[j].style.height < arr[j+1].style.height){
-                        var temp = arr[j+1];
-                        arr[j+1] = arr[j];
-                        arr[j] = temp;
+                    if(arr[j] < arr[j+1]){
+                       var temp = arr[j+1];
+                       arr[j+1] = arr[j];
+                       arr[j] = temp;
+                       count1++;
+                       state.push(arr.slice(0));
                     }
                 }
             }
-            for(var k = 0; k < arr.length; k++){
-                ul.appendChild(arr[k]);
-            }
-         }
-         // 功能函数
-         function remove(lis){
+        }
+        //渲染计数器,初始值为0
+        var count2 = 0;
+        //将每一趟中的每一次比较都渲染到页面中
+        function render(){
+            var lis = ul.getElementsByTagName('li');
+            var s = state.shift() || [];
+            //循环遍历li元素,给每一个li的高度分别设置为第i次比较后每一项的值
             for(var i = 0; i < lis.length; i++){
-               lis[i].onclick = function(){
-                   ul.removeChild(this);
-               }
+                lis[i].style.height = s[i];
             }
-         }
+            //渲染计数器,每次渲染就加一
+            count2++;
+            if(count2 == count1){
+                clearInterval(timer);
+            }
+        }
+        desc.onclick = function(){
+           // var lis = ul.getElementsByTagName('li');
+           // for(var i = 0; i < lis.length -1 ; i++){
+           //     for(var j = 0; j < lis.length - i - 1; j++){
+           //         if(lis[j].style.height < lis[j+1].style.height){
+           //             ul.insertBefore(lis[j+1],lis[j]);
+           //         }
+           //     }
+           // }
+           var lis = ul.getElementsByTagName('li');
+           //设置一个arr数组,用来存放每个li的高度
+           var arr = [];
+           state = [];
+           for(var i = 0; i < lis.length; i++){
+               arr.push(lis[i].style.height);
+           }
+           //对所有的li的高度值进行冒泡降序排列
+           sort2(arr);
+           //定义一个全局变量timer定时器
+           timer = setInterval(render,500);
+        }
+        // 功能函数
+        function remove(lis){
+           for(var i = 0; i < lis.length; i++){
+              lis[i].onclick = function(){
+                  ul.removeChild(this);
+              }
+           }
+        }
     </script>
 </body>
 </html>
